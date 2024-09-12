@@ -1,10 +1,37 @@
 from flask import Flask, render_template
+from json_person import read_data,write_data
+
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    person = read_data()
+    return render_template('index.html' , person=persons)
+
+@app.route ('/add_person' , methods= ['post'])
+def add_person():
+    new_person = {
+    'first_name' : request.form['first-name'],
+    'last_name' : request.form['last_name'],
+    'phone' : request.form['phone'],
+    'email' : request.form['email'],
+
+    }
+
+    persons = read_data()
+    person.append(new_person)
+    write_data(persons)
+    return rediret(url_for('index'))
+
+@app.route('/delete_person/<int:person_index>', methods=['POST'])
+def delete_person(person_index):
+    persons = read_data()
+    if 0 <= person_index < len(persons):
+        del persons[person_index]
+    write_data(persons)
+    return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
