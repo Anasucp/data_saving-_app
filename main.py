@@ -1,28 +1,26 @@
-from flask import Flask, render_template
-from json_person import read_data,write_data
-
+from flask import Flask, render_template, request, redirect, url_for
+from json_person import read_data, write_data
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    person = read_data()
-    return render_template('index.html' , person=persons)
+    persons = read_data()
+    return render_template('index.html', persons=persons)
 
-@app.route ('/add_person' , methods= ['post'])
+@app.route('/add_person', methods=['POST'])
 def add_person():
     new_person = {
-    'first_name' : request.form['first-name'],
-    'last_name' : request.form['last_name'],
-    'phone' : request.form['phone'],
-    'email' : request.form['email'],
-
+        'first_name': request.form['first_name'],
+        'last_name': request.form['last_name'],
+        'phone': request.form['phone'],
+        'email': request.form['email']
     }
 
     persons = read_data()
-    person.append(new_person)
+    persons.append(new_person)
     write_data(persons)
-    return rediret(url_for('index'))
+    return redirect(url_for('index'))
 
 @app.route('/delete_person/<int:person_index>', methods=['POST'])
 def delete_person(person_index):
@@ -31,7 +29,6 @@ def delete_person(person_index):
         del persons[person_index]
     write_data(persons)
     return redirect(url_for('index'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
